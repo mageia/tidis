@@ -422,7 +422,6 @@ impl StringCommandCtx {
                         .await
                         .batch_get(ekeys.clone())
                         .await?
-                        .into_iter()
                         .map(|pair| (pair.0, pair.1))
                         .collect();
 
@@ -782,7 +781,6 @@ impl StringCommandCtx {
                         .await
                         .batch_get(ekeys.clone())
                         .await?
-                        .into_iter()
                         .map(|pair| (pair.0, pair.1))
                         .collect();
 

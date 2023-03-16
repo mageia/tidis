@@ -196,6 +196,9 @@ pub use auth::Auth;
 mod debug;
 pub use debug::Debug;
 
+mod config;
+pub use config::Config;
+
 mod cluster;
 pub use cluster::Cluster;
 
@@ -245,6 +248,7 @@ pub enum Command {
     Subscribe(Subscribe),
     Unsubscribe(Unsubscribe),
     Ping(Ping),
+    Config(Config),
     Type(Type),
     TTL(TTL),
     PTTL(TTL),
@@ -380,6 +384,11 @@ impl Command {
                 &mut parse,
             )),
             "ping" => Command::Ping(transform_parse(Ping::parse_frames(&mut parse), &mut parse)),
+            "config" => Command::Config(transform_parse(
+                Config::parse_frames(&mut parse),
+                &mut parse,
+            )),
+
             "type" => Command::Type(transform_parse(Type::parse_frames(&mut parse), &mut parse)),
             "mget" => Command::Mget(transform_parse(Mget::parse_frames(&mut parse), &mut parse)),
             "mset" => Command::Mset(transform_parse(Mset::parse_frames(&mut parse), &mut parse)),
@@ -599,6 +608,7 @@ impl Command {
         // Match the command name, delegating the rest of the parsing to the
         // specific command.
         let command = match &command_name[..] {
+            "config" => Command::Config(Config::parse_argv(argv)?),
             "decr" => Command::Decr(IncrDecr::parse_argv(argv, true)?),
             "incr" => Command::Incr(IncrDecr::parse_argv(argv, true)?),
             "incrby" => Command::IncrBy(IncrDecr::parse_argv(argv, false)?),
@@ -705,6 +715,7 @@ impl Command {
             SetEX(cmd) => cmd.apply(dst).await,
             Subscribe(cmd) => cmd.apply(db, dst, shutdown).await,
             Ping(cmd) => cmd.apply(dst).await,
+            Config(cmd) => cmd.apply(dst).await,
             Type(cmd) => cmd.apply(dst).await,
             Mget(cmd) => cmd.apply(dst).await,
             Mset(cmd) => cmd.apply(dst).await,
@@ -771,9 +782,7 @@ impl Command {
             Zpopmax(cmd) => cmd.apply(dst, false).await,
             Zrank(cmd) => cmd.apply(dst).await,
             Zincryby(cmd) => cmd.apply(dst).await,
-
             Debug(cmd) => cmd.apply(dst).await,
-
             Cluster(cmd) => cmd.apply(topo, dst).await,
             ReadWrite(cmd) => cmd.apply("readwrite", dst, cur_client, clients).await,
             ReadOnly(cmd) => cmd.apply("readonly", dst, cur_client, clients).await,
@@ -804,6 +813,7 @@ impl Command {
             Command::Subscribe(_) => "subscribe",
             Command::Unsubscribe(_) => "unsubscribe",
             Command::Ping(_) => "ping",
+            Command::Config(_) => "config",
             Command::Type(_) => "type",
             Command::Mget(_) => "mget",
             Command::Mset(_) => "mset",

@@ -1,0 +1,3 @@
+[submodule "lib/tikv-client"]
+	path = lib/tikv-client
+	url = https://github.com/mageia/tikv-client.git

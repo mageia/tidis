@@ -578,7 +578,7 @@ impl SetCommandCtx {
             .await;
 
         match resp {
-            Ok(v) => Ok(resp_int(v as i64)),
+            Ok(v) => Ok(resp_int(v)),
             Err(e) => Ok(resp_err(e)),
         }
     }

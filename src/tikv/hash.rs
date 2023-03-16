@@ -491,7 +491,7 @@ impl<'a> HashCommandCtx {
                                 return Ok(resp_int(0));
                             }
                             let meta_size = self.txnkv_sum_key_size(&key, version).await?;
-                            Ok(resp_int(meta_size as i64))
+                            Ok(resp_int(meta_size))
                         }
                         None => Ok(resp_int(0)),
                     }

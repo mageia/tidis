@@ -11,11 +11,9 @@ use std::{
 use tokio::time::Duration;
 
 use crate::tikv::errors::{RTError, REDIS_LUA_PANIC};
-use rustls::{
-    internal::pemfile::{certs, rsa_private_keys},
-    AllowAnyAuthenticatedClient, RootCertStore,
-};
-use rustls::{Certificate, NoClientAuth, PrivateKey, ServerConfig};
+use rustls::{server::AllowAnyAuthenticatedClient, RootCertStore};
+use rustls::{server::NoClientAuth, Certificate, PrivateKey, ServerConfig};
+use rustls_pemfile::rsa_private_keys;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
@@ -177,14 +175,28 @@ pub fn ttl_from_timestamp(timestamp: u64) -> u64 {
 
 /// Load the passed certificates file
 fn load_certs(path: &Path) -> io::Result<Vec<Certificate>> {
-    certs(&mut BufReader::new(File::open(path)?))
-        .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "invalid cert"))
+    // certs(&mut BufReader::new(File::open(path)?))
+    //     .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "invalid cert"))
+
+    let mut reader = BufReader::new(File::open(path)?);
+    let item = rustls_pemfile::read_one(&mut reader).transpose().unwrap();
+    match item.unwrap() {
+        rustls_pemfile::Item::X509Certificate(cert) => Ok(vec![Certificate(cert)]),
+        _ => Err(io::Error::new(io::ErrorKind::InvalidInput, "invalid cert")),
+    }
 }
 
 /// Load the passed keys file
 fn load_keys(path: &Path) -> io::Result<Vec<PrivateKey>> {
-    rsa_private_keys(&mut BufReader::new(File::open(path)?))
-        .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "invalid key"))
+    let keys = rsa_private_keys(&mut BufReader::new(File::open(path)?))
+        .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "invalid key"))?;
+
+    let private_keys = keys
+        .into_iter()
+        .map(|raw_key| PrivateKey(raw_key))
+        .collect();
+
+    Ok(private_keys)
 }
 
 /// Configure the server using rusttls
@@ -211,11 +223,16 @@ pub fn load_config(
         NoClientAuth::new()
     };
 
-    let mut config = ServerConfig::new(client_auth);
-    config
-        // set this server to use one cert together with the loaded private key
-        .set_single_cert(certs, keys.remove(0))
-        .map_err(|err| io::Error::new(io::ErrorKind::InvalidInput, err))?;
+    // let mut config = ServerConfig::new(client_auth);
+    let config = ServerConfig::builder()
+        .with_safe_defaults()
+        .with_client_cert_verifier(client_auth)
+        .with_single_cert(certs, keys.remove(0))
+        .unwrap();
+    // config
+    // set this server to use one cert together with the loaded private key
+    // .set_single_cert(certs, keys.remove(0))
+    // .map_err(|err| io::Error::new(io::ErrorKind::InvalidInput, err))?;
 
     Ok(config)
 }

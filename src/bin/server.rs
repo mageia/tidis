@@ -7,16 +7,14 @@ use tidis::{
     utils, Config, PrometheusServer,
 };
 
-use slog::info;
-
 use async_std::net::TcpListener;
+use async_tls::TlsAcceptor;
+use slog::info;
 use std::fs;
 use std::process::exit;
 use std::sync::Arc;
 use structopt::StructOpt;
 use tokio::signal;
-
-use async_tls::TlsAcceptor;
 
 #[tokio::main]
 pub async fn main() -> tidis::Result<()> {
@@ -131,7 +129,7 @@ pub async fn main() -> tidis::Result<()> {
     Ok(())
 }
 
-#[derive(StructOpt, Debug)]
+#[derive(Debug, StructOpt)]
 #[structopt(name = "tikv-service-server", version = env!("CARGO_PKG_VERSION"), author = env!("CARGO_PKG_AUTHORS"), about = "A service layer for TiKV")]
 struct Cli {
     #[structopt(name = "listen", long = "--listen")]

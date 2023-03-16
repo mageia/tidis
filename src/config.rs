@@ -2,26 +2,39 @@ use serde::Deserialize;
 
 use crate::{DEFAULT_PORT, DEFAULT_TLS_PORT};
 
-use slog::{self, Drain};
-use slog_term;
-use std::fs::OpenOptions;
+use slog::{self, Drain, Logger};
+use slog_async::Async;
+use slog_term::{self, FullFormat, TermDecorator};
 
 lazy_static! {
-    pub static ref LOGGER: slog::Logger = slog::Logger::root(
-        slog_term::FullFormat::new(slog_term::PlainSyncDecorator::new(
-            OpenOptions::new()
-                .create(true)
-                .write(true)
-                .append(true)
-                .open(log_file())
-                .unwrap()
-        ))
-        .use_custom_timestamp(crate::utils::timestamp_local)
-        .build()
-        .filter_level(slog::Level::from_usize(log_level()).unwrap())
-        .fuse(),
-        slog::o!()
-    );
+    pub static ref LOGGER: slog::Logger = {
+        let decorator = TermDecorator::new().build();
+        let drain = match log_file() {
+            Some(name) => {
+                let file = std::fs::OpenOptions::new()
+                    .create(true)
+                    .write(true)
+                    .append(true)
+                    .open(name)
+                    .unwrap();
+                let file_drain = FullFormat::new(slog_term::PlainDecorator::new(file))
+                    .build()
+                    .fuse();
+                Async::new(file_drain).build().fuse()
+            }
+            None => Async::new(
+                FullFormat::new(decorator)
+                    .use_custom_timestamp(crate::utils::timestamp_local)
+                    .build()
+                    .filter_level(slog::Level::from_usize(log_level()).unwrap())
+                    .fuse(),
+            )
+            .build()
+            .fuse(),
+        };
+
+        Logger::root(drain, slog::o!())
+    };
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -372,15 +385,28 @@ pub fn log_level() -> usize {
     }
 }
 
-pub fn log_file() -> String {
+pub fn log_file() -> Option<String> {
+    // unsafe {
+    //     if let Some(c) = &SERVER_CONFIG {
+    //         if let Some(l) = c.server.log_file.clone() {
+    //             return l;
+    //         }
+    //     }
+    // }
+    // "tikv-service.log".to_owned()
     unsafe {
-        if let Some(c) = &SERVER_CONFIG {
-            if let Some(l) = c.server.log_file.clone() {
-                return l;
-            }
+        // if let Some(c) = &SERVER_CONFIG {
+        // c.server.log_file.clone()
+        // if let Some(l) = c.server.log_file.clone() {
+        //     return l;
+        // }
+        // }
+        match &SERVER_CONFIG {
+            Some(c) => c.server.log_file.clone(),
+            None => None,
         }
     }
-    "tikv-service.log".to_owned()
+    // "tikv-service.log".to_owned()
 }
 
 pub fn set_global_config(config: Config) {

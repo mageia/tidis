@@ -126,7 +126,6 @@ impl ZsetCommandCtx {
                             let data_map: HashMap<Key, Value> = txn
                                 .batch_get(data_keys)
                                 .await?
-                                .into_iter()
                                 .map(|pair| (pair.0, pair.1))
                                 .collect();
 
@@ -317,7 +316,7 @@ impl ZsetCommandCtx {
             .await;
 
         match resp {
-            Ok(v) => Ok(resp_int(v as i64)),
+            Ok(v) => Ok(resp_int(v)),
             Err(e) => Ok(resp_err(e)),
         }
     }
@@ -526,8 +525,8 @@ impl ZsetCommandCtx {
                             }
 
                             if reverse {
-                                let r_min = size as i64 - max - 1;
-                                let r_max = size as i64 - min - 1;
+                                let r_min = size - max - 1;
+                                let r_max = size - min - 1;
                                 min = r_min;
                                 max = r_max;
                             }
@@ -1060,7 +1059,6 @@ impl ZsetCommandCtx {
                             let data_map: HashMap<Key, Value> = txn
                                 .batch_get(data_keys.clone())
                                 .await?
-                                .into_iter()
                                 .map(|pair| (pair.0, pair.1))
                                 .collect();
 
@@ -1119,7 +1117,7 @@ impl ZsetCommandCtx {
             .await;
 
         match resp {
-            Ok(v) => Ok(resp_int(v as i64)),
+            Ok(v) => Ok(resp_int(v)),
             Err(e) => Ok(resp_err(e)),
         }
     }
@@ -1349,7 +1347,7 @@ impl ZsetCommandCtx {
             .await;
 
         match resp {
-            Ok(v) => Ok(resp_int(v as i64)),
+            Ok(v) => Ok(resp_int(v)),
             Err(e) => Ok(resp_err(e)),
         }
     }
