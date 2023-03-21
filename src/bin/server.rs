@@ -132,42 +132,42 @@ pub async fn main() -> tidis::Result<()> {
 #[derive(Debug, StructOpt)]
 #[structopt(name = "tikv-service-server", version = env!("CARGO_PKG_VERSION"), author = env!("CARGO_PKG_AUTHORS"), about = "A service layer for TiKV")]
 struct Cli {
-    #[structopt(name = "listen", long = "--listen")]
+    #[structopt(name = "config", long, short)]
+    config: Option<String>,
+
+    #[structopt(name = "listen", long, short)]
     listen_addr: Option<String>,
 
-    #[structopt(name = "port", long = "--port")]
+    #[structopt(name = "port", long, short)]
     port: Option<String>,
 
-    #[structopt(name = "tls_listen", long = "--tls_listen")]
+    #[structopt(name = "tls_listen", long)]
     tls_listen_addr: Option<String>,
 
-    #[structopt(name = "tls_key_file", long = "--tls_key_file")]
+    #[structopt(name = "tls_key_file", long)]
     tls_key_file: Option<String>,
 
-    #[structopt(name = "tls_cert_file", long = "--tls_cert_file")]
+    #[structopt(name = "tls_cert_file", long)]
     tls_cert_file: Option<String>,
 
-    #[structopt(name = "tls_port", long = "--tls_port")]
+    #[structopt(name = "tls_port", long)]
     tls_port: Option<String>,
 
-    #[structopt(name = "tls_auth_client", long = "--tls_auth_client")]
+    #[structopt(name = "tls_auth_client", long)]
     tls_auth_client: Option<bool>,
 
-    #[structopt(name = "tls_ca_cert_file", long = "--tls_ca_cert_file")]
+    #[structopt(name = "tls_ca_cert_file", long)]
     tls_ca_cert_file: Option<String>,
 
-    #[structopt(name = "pdaddrs", long = "--pdaddrs")]
+    #[structopt(name = "pd_addrs", long)]
     pd_addrs: Option<String>,
 
-    #[structopt(name = "instid", long = "--instid")]
+    #[structopt(name = "instance_id", long)]
     instance_id: Option<String>,
 
-    #[structopt(name = "promlisten", long = "--promlisten")]
+    #[structopt(name = "prom_listen", long)]
     prom_listen_addr: Option<String>,
 
-    #[structopt(name = "promport", long = "--promport")]
+    #[structopt(name = "prom_port", long)]
     prom_port: Option<String>,
-
-    #[structopt(name = "config", long = "--config")]
-    config: Option<String>,
 }

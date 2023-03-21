@@ -2703,6 +2703,7 @@ dependencies = [
 [[package]]
 name = "tikv-client"
 version = "0.1.0"
+source = "git+https://github.com/mageia/tikv-client.git?branch=main#c16cfc8e9323f9e5758b8ad5388ec3cf60e75d99"
 dependencies = [
  "async-recursion",
  "async-trait",
@@ -2733,6 +2734,7 @@ dependencies = [
 [[package]]
 name = "tikv-client-common"
 version = "0.1.0"
+source = "git+https://github.com/mageia/tikv-client.git?branch=main#c16cfc8e9323f9e5758b8ad5388ec3cf60e75d99"
 dependencies = [
  "futures 0.3.27",
  "grpcio",
@@ -2748,6 +2750,7 @@ dependencies = [
 [[package]]
 name = "tikv-client-pd"
 version = "0.1.0"
+source = "git+https://github.com/mageia/tikv-client.git?branch=main#c16cfc8e9323f9e5758b8ad5388ec3cf60e75d99"
 dependencies = [
  "async-trait",
  "futures 0.3.27",
@@ -2760,6 +2763,7 @@ dependencies = [
 [[package]]
 name = "tikv-client-proto"
 version = "0.1.0"
+source = "git+https://github.com/mageia/tikv-client.git?branch=main#c16cfc8e9323f9e5758b8ad5388ec3cf60e75d99"
 dependencies = [
  "futures 0.3.27",
  "grpcio",
@@ -2773,6 +2777,7 @@ dependencies = [
 [[package]]
 name = "tikv-client-store"
 version = "0.1.0"
+source = "git+https://github.com/mageia/tikv-client.git?branch=main#c16cfc8e9323f9e5758b8ad5388ec3cf60e75d99"
 dependencies = [
  "async-trait",
  "derive-new",
