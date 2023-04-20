@@ -23,6 +23,9 @@ jobs:
           override: true
           target: ${{ matrix.target }}
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
       - uses: actions-rs/cargo@v1
         with:
           command: build
