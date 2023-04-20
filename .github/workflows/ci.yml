@@ -8,7 +8,7 @@ concurrency:
 
 jobs:
   check:
-    name: Check
+    name: Check, Fmt, Clippy, Unit Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,50 +17,24 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+
+      - name: Setup Protobuf Compiler
+        run: apt-get install -y protobuf-compiler
+
       - uses: actions-rs/cargo@v1
         with:
           command: check
 
-  fmt:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --all -- --check
 
-  clippy:
-    name: Clippy
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: --all --all-targets -- -D warnings
 
-  unit-test:
-    name: Unit Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
       - uses: actions-rs/cargo@v1
         with:
           command: test

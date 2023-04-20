@@ -24,7 +24,7 @@ RUN rustup self update \
   && rustup default stable
 
 WORKDIR /tikv
-COPY lib ./lib/
+# COPY lib ./lib/
 COPY src ./src/
 COPY Cargo* ./
 COPY Makefile ./
