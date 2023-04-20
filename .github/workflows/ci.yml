@@ -18,8 +18,8 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Setup Protobuf Compiler
-        run: apt-get install -y protobuf-compiler
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
 
       - uses: actions-rs/cargo@v1
         with:
