@@ -15,7 +15,7 @@ name = "tidis-server"
 path = "src/bin/server.rs"
 
 [dependencies]
-async-stream = "0.3.4"
+async-stream = "0.3.5"
 atoi = "2.0.0"
 bytes = "1"
 chrono = "0.4"
@@ -24,7 +24,7 @@ structopt = "0.3.26"
 slog = { version = "2.7", features = ["max_level_trace", "release_max_level_debug"] }
 slog-term = { version = "2.9" }
 slog-async = "2.7.0"
-tokio = { version = "1.26.0", features = ["full"] }
+tokio = { version = "1.27.0", features = ["full"] }
 tokio-stream = "0.1"
 tokio-util = { version = "0.7.7", features = ["rt"] }
 tikv-client = { git = "https://github.com/mageia/tikv-client.git", branch = "main" }
@@ -32,7 +32,7 @@ lazy_static = "1.4.0"
 thiserror = "1"
 prometheus = { version = "0.13.3", features = ["process"]}
 pprof = { version = "0.11", features = ["flamegraph", "protobuf-codec"] }
-hyper = { version = "0.14.25", features = ["full"] }
+hyper = { version = "0.14.26", features = ["full"] }
 async-std = { version = "1.12.0", features = ["unstable"] }
 async-tls = { version = "0.12.0", features = ["server"], default-features = false }
 rustls = "0.20.8"

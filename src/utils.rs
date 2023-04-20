@@ -191,10 +191,7 @@ fn load_keys(path: &Path) -> io::Result<Vec<PrivateKey>> {
     let keys = rsa_private_keys(&mut BufReader::new(File::open(path)?))
         .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "invalid key"))?;
 
-    let private_keys = keys
-        .into_iter()
-        .map(|raw_key| PrivateKey(raw_key))
-        .collect();
+    let private_keys = keys.into_iter().map(PrivateKey).collect();
 
     Ok(private_keys)
 }

@@ -1,10 +1,5 @@
-name: CI
-
-on:
-  pull_request:
-    branches:
-      - master
-  workflow_dispatch:
+name: Continuous Integration
+on: [push, pull_request]
 
 # Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.
 concurrency:
@@ -12,8 +7,66 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  dev:
-    name: Run fmt, clippy and check
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: check
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all --all-targets -- -D warnings
+
+  unit-test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+  e2e-test:
+    name: E2E Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,56 +75,27 @@ jobs:
         env:
           TOKEN: ${{ secrets.GIT_ACTION_BOT }}
         run: git config --global url."https://${TOKEN}@github.com/".insteadOf "https://github.com/"
-      - name: Install `rust` toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-2022-07-27-x86_64-unknown-linux-gnu
-          default: true
-          profile: minimal
-          components: clippy, rustfmt
-      - name: Run format
-        env:
-          RUSTFLAGS: -Dwarnings
-          RUST_BACKTRACE: "1"
-          LOG_LEVEL: INFO
-          EXTRA_CARGO_ARGS: --no-run
-        working-directory: ./
-        run: |
-          cargo fmt --check
-      - name: Run clippy
-        env:
-          RUSTFLAGS: -Dwarnings
-          RUST_BACKTRACE: "1"
-          LOG_LEVEL: INFO
-          EXTRA_CARGO_ARGS: --no-run
-        working-directory: ./
-        run: |
-          cargo clippy
-      - name: Run check
-        env:
-          RUSTFLAGS: -Dwarnings
-          RUST_BACKTRACE: "1"
-          LOG_LEVEL: INFO
-          EXTRA_CARGO_ARGS: --no-run
-        working-directory: ./
-        run: |
-          cargo check
+
       - name: Setup tikv instance
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
           /home/runner/.tiup/bin/tiup playground nightly --mode tikv-slim --without-monitor &
+
       - name: Setup tidis
         run: |
           cargo build
           ./target/debug/tidis-server --config="config.toml" &
+
       - name: Setup test tool env
         uses: actions/setup-python@v3
         with:
-          python-version: '3.x'
-          cache: 'pip'
+          python-version: "3.x"
+          cache: "pip"
+
       - name: Setup test tool dependency
         working-directory: test
         run: pip install -r requirements.txt
+
       - name: Run E2E test
         working-directory: test
         run: python test_helper.py --port 6666
