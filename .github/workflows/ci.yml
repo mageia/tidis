@@ -47,11 +47,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: lukka/get-cmake@latest
-      - name: Configure git for private modules
-        env:
-          TOKEN: ${{ secrets.GIT_ACTION_BOT }}
-        run: git config --global url."https://${TOKEN}@github.com/".insteadOf "https://github.com/"
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      # - uses: lukka/get-cmake@latest
+      # - name: Configure git for private modules
+      #   env:
+      #     TOKEN: ${{ secrets.GIT_ACTION_BOT }}
+      #   run: git config --global url."https://${TOKEN}@github.com/".insteadOf "https://github.com/"
 
       - name: Setup tikv instance
         run: |
