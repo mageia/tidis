@@ -19,6 +19,7 @@ lazy_static! {
                     .unwrap();
                 let file_drain = FullFormat::new(slog_term::PlainDecorator::new(file))
                     .build()
+                    .filter_level(slog::Level::from_usize(log_level()).unwrap())
                     .fuse();
                 Async::new(file_drain).build().fuse()
             }

@@ -9,7 +9,6 @@ use tidis::{
 
 use async_std::net::TcpListener;
 use async_tls::TlsAcceptor;
-use slog::info;
 use std::fs;
 use std::process::exit;
 use std::sync::Arc;
@@ -37,10 +36,7 @@ pub async fn main() -> tidis::Result<()> {
     };
 
     match &config {
-        Some(c) => {
-            println!("{:?}", c);
-            set_global_config(c.clone())
-        }
+        Some(c) => set_global_config(c.clone()),
         None => (),
     }
 
@@ -84,34 +80,27 @@ pub async fn main() -> tidis::Result<()> {
         addrs.push(s.to_string());
     });
 
-    //do_async_raw_connect(addrs).await?;
-    //do_async_txn_connect(addrs).await?;
     do_async_connect(addrs).await?;
 
+    //PrometheusServer
     let server = PrometheusServer::new(
         format!("{}:{}", &prom_listen, prom_port),
         instance_id as i64,
     );
-    tokio::spawn(async move {
-        server.run().await;
-    });
+    tokio::spawn(async move { server.run().await });
 
     let mut listener = None;
     let mut tls_listener = None;
     let mut tls_acceptor = None;
     if port != "0" {
-        info!(
-            tidis::config::LOGGER,
-            "TiKV Service Server Listen on: {}:{}", &listen_addr, port
-        );
-        // Bind a TCP listener
+        println!("Tidis Server Listen on: {}:{}", &listen_addr, port);
         listener = Some(TcpListener::bind(&format!("{}:{}", &listen_addr, port)).await?);
     }
 
     if tls_port != "0" && !tls_cert_file.is_empty() && !tls_key_file.is_empty() {
-        info!(
-            tidis::config::LOGGER,
-            "TiKV Service Server SSL Listen on: {}:{}", &tls_listen_addr, tls_port
+        println!(
+            "Tidis Server SSL Listen on: {}:{}",
+            &tls_listen_addr, tls_port
         );
         tls_listener =
             Some(TcpListener::bind(&format!("{}:{}", &tls_listen_addr, tls_port)).await?);

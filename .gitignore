@@ -1,4 +1,6 @@
-/target
+target
 **/*.rs.bk
 .vscode
 __pycache__
+venv
+*.log

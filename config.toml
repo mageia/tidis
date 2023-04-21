@@ -1,6 +1,6 @@
 [server]
 listen = "0.0.0.0"
-port = 6666
+port = 6380
 tls_listen = "0.0.0.0"
 tls_port = 6443
 tls_key_file = ""
