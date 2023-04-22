@@ -1,6 +1,6 @@
 # Tidis
 
-[![CI](https://github.com/tidb-incubator/tidis/actions/workflows/ci.yml/badge.svg)](https://github.com/tidb-incubator/tidis/actions/workflows/ci.yml)
+[![Continuous Integration](https://github.com/mageia/tidis/actions/workflows/ci.yml/badge.svg)](https://github.com/mageia/tidis/actions/workflows/ci.yml)
 [![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 [![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README-ZH.md)
 

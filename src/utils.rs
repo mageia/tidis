@@ -11,8 +11,8 @@ use std::{
 use tokio::time::Duration;
 
 use crate::tikv::errors::{RTError, REDIS_LUA_PANIC};
-use rustls::{server::AllowAnyAuthenticatedClient, RootCertStore};
-use rustls::{server::NoClientAuth, Certificate, PrivateKey, ServerConfig};
+use rustls::server::{AllowAnyAuthenticatedClient, NoClientAuth};
+use rustls::{Certificate, PrivateKey, RootCertStore, ServerConfig};
 use rustls_pemfile::rsa_private_keys;
 use std::fs::File;
 use std::io::BufReader;
@@ -218,6 +218,7 @@ pub fn load_config(
         AllowAnyAuthenticatedClient::new(client_auth_roots)
     } else {
         NoClientAuth::new()
+        // NoClientAuth::boxed()
     };
 
     // let mut config = ServerConfig::new(client_auth);

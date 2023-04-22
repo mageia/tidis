@@ -91,7 +91,7 @@ pub async fn main() -> tidis::Result<()> {
 
     let mut listener = None;
     let mut tls_listener = None;
-    let mut tls_acceptor = None;
+    let mut tls_acceptor: Option<TlsAcceptor> = None;
     if port != "0" {
         println!("Tidis Server Listen on: {}:{}", &listen_addr, port);
         listener = Some(TcpListener::bind(&format!("{}:{}", &listen_addr, port)).await?);
@@ -110,6 +110,7 @@ pub async fn main() -> tidis::Result<()> {
             tls_auth_client,
             tls_ca_cert_file,
         )?;
+        // tls_acceptor = Some(TlsAcceptor::from(tls_config));
         tls_acceptor = Some(TlsAcceptor::from(Arc::new(tls_config)));
     }
 

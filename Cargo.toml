@@ -33,8 +33,8 @@ thiserror = "1"
 prometheus = { version = "0.13.3", features = ["process"]}
 pprof = { version = "0.11", features = ["flamegraph", "protobuf-codec"] }
 hyper = { version = "0.14.26", features = ["full"] }
-async-std = { version = "1.12.0", features = ["unstable"] }
-async-tls = { version = "0.12.0", features = ["server"], default-features = false }
+async-std = { version = "1.12.0" }
+async-tls = { version = "0.12.0", features = ["server"] }
 rustls = "0.20.8"
 rustls-pemfile = "1.0.2"
 rand = {version = "0.8.5", features = ["small_rng"] }
