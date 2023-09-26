@@ -5,7 +5,7 @@ name = "tidis"
 version = "2.0.0"
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/tikv/tidis"
+repository = "https://github.com/mageia/tidis"
 description = """
 The service layer for TiKV, a distributed key-value store, powered by PingCAP.
 """
@@ -21,29 +21,38 @@ bytes = "1"
 chrono = "0.4"
 crc = "3.0"
 structopt = "0.3.26"
-slog = { version = "2.7", features = ["max_level_trace", "release_max_level_debug"] }
+slog = { version = "2.7", features = [
+    "max_level_trace",
+    "release_max_level_debug",
+] }
 slog-term = { version = "2.9" }
-slog-async = "2.7.0"
-tokio = { version = "1.27.0", features = ["full"] }
+slog-async = "2.8.0"
+tokio = { version = "1.32.0", features = ["full"] }
 tokio-stream = "0.1"
-tokio-util = { version = "0.7.7", features = ["rt"] }
+tokio-util = { version = "0.7.9", features = ["rt"] }
 tikv-client = { git = "https://github.com/mageia/tikv-client.git", branch = "main" }
 lazy_static = "1.4.0"
 thiserror = "1"
-prometheus = { version = "0.13.3", features = ["process"]}
+prometheus = { version = "0.13.3", features = ["process"] }
 pprof = { version = "0.11", features = ["flamegraph", "protobuf-codec"] }
-hyper = { version = "0.14.26", features = ["full"] }
+hyper = { version = "0.14.27", features = ["full"] }
 async-std = { version = "1.12.0" }
 async-tls = { version = "0.12.0", features = ["server"] }
-rustls = "0.20.8"
-rustls-pemfile = "1.0.2"
-rand = {version = "0.8.5", features = ["small_rng"] }
+rustls = "0.20.9"
+rustls-pemfile = "1.0.3"
+rand = { version = "0.8.5", features = ["small_rng"] }
 regex = "1"
-toml = { version = "0.7.3" }
+toml = { version = "0.7.8" }
 serde = { version = "1.0", features = ["derive"] }
 futures = { version = "0.3", default-features = false }
-mlua = { version = "0.8.8", features = ["lua51", "async", "vendored", "macros", "send"]}
-sha1 = "0.10.5"
+mlua = { version = "0.8.10", features = [
+    "lua51",
+    "async",
+    "vendored",
+    "macros",
+    "send",
+] }
+sha1 = "0.10.6"
 hex = "0.4.3"
 
 [profile.release]
